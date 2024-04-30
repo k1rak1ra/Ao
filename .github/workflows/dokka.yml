@@ -31,4 +31,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           BRANCH: gh-pages
-          FOLDER: ${{ github.workspace }}/So/build/dokka/html/
+          FOLDER: ${{ github.workspace }}/Ao/build/dokka/html/
