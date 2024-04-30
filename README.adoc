@@ -1,0 +1,163 @@
+= Ao
+:toc:
+:source-highlighter: highlightjs
+
+== Introduction
+
+Ao is a Kotlin multiplatform Bluetooth LE library
+
+== Features
+
+* Helper functions to check permission state and ask for permissions if supported
+* Helper functions to check if Bluetooth adapter is on and turn it on if supported
+* Simple and easy to use, follows modern Kotlin design patterns
+* Scanner with result list observable
+* Ability to query a device for services and characteristics
+* Ability to get an observable from characteristics with the Notify property
+* Ability to read from characteristics
+* Ability to write to characteristics with or without response
+* Thread-safety through use of request queues
+* Makes heavy use of suspend functions instead of the delegate pattern of traditional BLE APIs
+* Automatically negotiates the highest possible MTU
+
+== Supported Platforms
+
+* Android
+* iOS
+
+== Usage Guide
+
+=== Getting Started
+
+. Integrate this library as a dependency in your project:
+.. Add the Maven repository to your `settings.gradle`
+... `maven("https://k1ra.net/nexus/repository/public")`
+.. Add the dependency:
+... `implementation("net.k1ra.ao:Ao:latest.release")`
+.. Add the following linker flag to `Other Linker Flags` in your Xcode project:
+... `-lsqlite3`
+. Use `BLEManager`:
+
+[source,kotlin]
+----
+//Suspend, returns true if permissions are present and false if they are not
+BLEManager.hasPermissions()
+
+//Suspend, attempts to turn on adapter if supported
+//Returns true if adapter is on and false if adapter is still off
+//If this returns false, you should show an error telling the user to enable Bluetooth
+BLEManager.turnOnAdapter()
+
+//Suspend, returns true if adapter is enabled and false if it is not
+BLEManager.isAdapterEnabled()
+
+//Suspend, requests Bluetooth permissions for scanning and connection
+//Returns true if permissions and granted and false if they are denied
+//If this returns false, you should show an error telling your user to go to Settings and manually grant the permissions
+BLEManager.requestPermissions()
+
+
+//Starts a scan for nearby devices
+//If a scan is currently in progress, it is stopped and a new scan is started
+BLEManager.startScan()
+
+//Returns true if a scan is currently in progress
+BLEManager.isScanning()
+
+//Stops the current scan
+BLEManager.stopScan()
+
+//Subscribes to the scan results observable
+//singletonSubscribe cancels any other active subscriptions, ensuring only one subscription is active at a time
+//Can also call subscribe{} if you want multiple subscribers, or removeAllSubscribers() to remove all subscribers
+BLEManager.scanResults.singletonSubscribe {
+    //Do something with the List<Device>
+    //You can filter via any attribute, such as advertised service UUID by calling filter{} on the list
+}
+
+
+//Suspend, connects to the Device with an optional connection status callback
+//Will return either ConnectionSuccess or ConnectionFailure
+BLEManager.connectDevice(Device, ConnectionStatusCallback? = null)
+
+//Suspends, disconnects from the Device
+//Will return Unit once the device is disconnected (If it was even connected in the first place - it is fault-tolerant)
+BLEManager.disconnectDevice(Device)
+
+//Gets the Services and their Characteristics for a connected device
+//Returns null if the device is not connected or upon another error
+//Otherwise, returns a List<Service>
+BLEManager.getServices(Device)
+
+//Getting a service
+val service = BLEManager.getServices(Device).first { it.uuid == "180D" }
+
+//Getting the MTU for a Service (Int)
+service.mtu
+
+//Getting the Device for a Service
+service.device
+
+//Getting the Characteristics for a Service (List<Characteristic>)
+service.characteristics
+
+//Getting a Characteristic
+val characteristic = service.characteristics.first { it.uuid == "2A36" }
+
+//Checking a characteristic's properties (Boolean)
+characteristic.readable
+characteristic.observable
+characteristic.writable
+characteristic.writableWithoutResponse
+
+//Suspend, reading from a readable characteristic
+//Returns either Failure with an error reason or Success with a ByteArray containing the read data
+characteristic.read()
+
+//Suspend, observing an observable characteristic - multiple observers allowed
+characteristic.observe {
+    //Do something with the new ByteArray
+}
+
+//Suspend, observing an observable characteristic - all other observers are cancelled, ensuring only one observer is active at a given time
+characteristic.singletonObserve {
+    //Do something with the new ByteArray
+}
+
+//Suspend, cancels the observation of an observable characteristic and cancels all observers
+characteristic.cancelObserve()
+
+//Suspend, writes to a writable characteristic
+//Returns either Failure with an error reason or Success with a ByteArray containing the written data
+characteristic.write(ByteArray)
+
+//Suspend, writes to a writable characteristic without response
+//Returns either Failure with an error reason or Success with a ByteArray containing the written data
+characteristic.writeNoResp(ByteArray)
+----
+
+== Usage Examples
+
+There are additional usage examples in the AoDemo app in this project
+
+== Environment Setup
+
+* Since this is a KMM project, a modern version of Android Studio (2023.1.1 or newer) is required
+* Remember to configure Android Studio to use Java 17
+
+== Dokka
+https://k1rak1ra.github.io/Ao/index.html
+
+== Conduct
+
+This is a professional environment, and you are expected to conduct yourself in a professional and courteous manner.
+If you fail to exhibit appropriate conduct, your contributions and interactions will no longer be welcome here.
+
+== Contributing
+
+* Everyone is welcome and encouraged to contribute.
+If you are looking for a place to start, try working on an unassigned issue with the `good-first-issue` tag.
+* All contributions are expected to conform to standard Kotlin code style and be covered by unit tests.
+* PRs will not be merged if there are failing tests.
+* If you would like to contribute code you can do so through GitHub by forking the repository and sending a pull request.
+* When submitting code, please follow the existing conventions and style in order to keep the code readable.

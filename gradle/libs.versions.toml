@@ -1,0 +1,37 @@
+[versions]
+agp = "8.2.2"
+android-compileSdk = "34"
+android-minSdk = "24"
+android-targetSdk = "34"
+androidx-activityCompose = "1.9.0"
+compose = "1.6.6"
+compose-plugin = "1.6.1"
+kotlin = "1.9.23"
+fdr = "1.0.1"
+sharedpref  = "1.0.1"
+appcompat = "1.6.1"
+material = "1.11.0"
+kotlin-coroutines = "1.8.0"
+kotlin-datetime = "0.5.0"
+uuid = "0.8.2"
+dokka = "1.9.20"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+k1ra-fdr = { module = "net.k1ra.flight_data_recorder:FlightDataRecorder", version.ref = "fdr" }
+k1ra-sharedpref = { module = "net.k1ra.shared_pref_kmm:SharedPrefKmm", version.ref = "sharedpref" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
+uuid = { module = "com.benasher44:uuid", version.ref="uuid" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
